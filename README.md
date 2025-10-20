@@ -4,12 +4,12 @@ Docker image with Python 3.14t (free-threaded) and pre-installed packages for Dj
 
 ## Included Packages
 
-- Django 5.1.5
+- Django 5.2.7
 - Granian 2.5.5 (free-threaded build for Python 3.14t)
 
 ## Base Image
 
-`quay.io/pypa/manylinux2014_x86_64:latest`
+`quay.io/pypa/manylinux_2_28_x86_64:latest`
 
 ## Usage
 

@@ -11,8 +11,8 @@ RUN yum install -y \
 # Upgrade pip for Python 3.14t
 RUN python3.14t -m pip install --upgrade pip
 
-# Install Django 5.1.5
-RUN python3.14t -m pip install django==5.1.5
+# Install Django 5.2.7
+RUN python3.14t -m pip install django==5.2.7
 
 # Install Granian 2.5.5 (Python 3.14t free-threaded wheel)
 RUN python3.14t -m pip install granian==2.5.5
@@ -25,7 +25,7 @@ RUN python3.14t -m pip install \
     numpy \
     pandas \
     matplotlib \
-    psycopg[binary] \
+    psycopg \
     django-extensions
 
 # Create app directory
