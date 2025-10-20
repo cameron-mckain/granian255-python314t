@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh repo delete Mckain-Cloud/granian255-python314t --yes)",
+      "Bash(git init)",
+      "Bash(git add .)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nInitial commit: Docker image with Python 3.14t, Django, and Granian\n\n- Dockerfile with manylinux2014 base\n- Pre-installed Django 5.1.5 and Granian 2.5.5\n- GitHub Actions workflow for automated builds\n- Push to ghcr.io on main branch\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
