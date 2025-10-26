@@ -12,29 +12,18 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Switch to superset user for pip installations
-USER superset
-
-# Install database drivers in the virtual environment
-RUN /app/.venv/bin/pip install --no-cache-dir \
-    # PostgreSQL driver
+# Install database drivers using python -m pip (works regardless of venv location)
+# Stay as root user for installation
+RUN python -m pip install --no-cache-dir \
     psycopg2-binary==2.9.9 \
-    # SQLAlchemy utilities
     sqlalchemy-utils==0.41.1 \
-    # Additional useful drivers for future use
-    # MySQL driver (optional)
-    # mysqlclient==2.2.0 \
-    # ClickHouse driver (for SigNoz integration)
     clickhouse-driver==0.2.6 \
     clickhouse-sqlalchemy==0.2.4
 
 # Verify installations
-RUN /app/.venv/bin/python -c "import psycopg2; print('psycopg2 installed successfully')" && \
-    /app/.venv/bin/python -c "import sqlalchemy_utils; print('sqlalchemy-utils installed successfully')" && \
-    /app/.venv/bin/python -c "import clickhouse_driver; print('clickhouse-driver installed successfully')"
-
-# Switch back to root for final setup
-USER root
+RUN python -c "import psycopg2; print('psycopg2 installed successfully')" && \
+    python -c "import sqlalchemy_utils; print('sqlalchemy-utils installed successfully')" && \
+    python -c "import clickhouse_driver; print('clickhouse-driver installed successfully')"
 
 # Create bootstrap marker to skip bootstrap script
 RUN touch /root/bootstrap && echo "Database drivers pre-installed in image" > /root/bootstrap
@@ -45,5 +34,5 @@ USER superset
 # Labels for image metadata
 LABEL org.opencontainers.image.title="Superset with Database Drivers"
 LABEL org.opencontainers.image.description="Apache Superset with pre-installed PostgreSQL and ClickHouse drivers"
-LABEL org.opencontainers.image.source="https://github.com/cameron-mckain/superset-custom"
+LABEL org.opencontainers.image.source="https://github.com/cameron-mckain/granian255-python314t"
 LABEL org.opencontainers.image.version="latest"
