@@ -6,24 +6,29 @@ FROM apache/superset:latest
 # Switch to root to install packages
 USER root
 
-# Install system dependencies for database drivers and pip
+# Install system dependencies for database drivers
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
-    python3-pip \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install database drivers using pip3
-RUN pip3 install --no-cache-dir \
+# Install pip into the virtual environment using get-pip.py
+RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+    /app/.venv/bin/python get-pip.py && \
+    rm get-pip.py
+
+# Install database drivers into the virtual environment
+RUN /app/.venv/bin/pip install --no-cache-dir \
     psycopg2-binary==2.9.9 \
     sqlalchemy-utils==0.41.1 \
     clickhouse-driver==0.2.6 \
     clickhouse-sqlalchemy==0.2.4
 
 # Verify installations
-RUN python -c "import psycopg2; print('psycopg2 installed successfully')" && \
-    python -c "import sqlalchemy_utils; print('sqlalchemy-utils installed successfully')" && \
-    python -c "import clickhouse_driver; print('clickhouse-driver installed successfully')"
+RUN /app/.venv/bin/python -c "import psycopg2; print('psycopg2 installed successfully')" && \
+    /app/.venv/bin/python -c "import sqlalchemy_utils; print('sqlalchemy-utils installed successfully')" && \
+    /app/.venv/bin/python -c "import clickhouse_driver; print('clickhouse-driver installed successfully')"
 
 # Create bootstrap marker to skip bootstrap script
 RUN touch /root/bootstrap && echo "Database drivers pre-installed in image" > /root/bootstrap
