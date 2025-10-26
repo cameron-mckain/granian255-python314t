@@ -6,15 +6,15 @@ FROM apache/superset:latest
 # Switch to root to install packages
 USER root
 
-# Install system dependencies for database drivers
+# Install system dependencies for database drivers and pip
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
+    python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
-# Install database drivers using python -m pip (works regardless of venv location)
-# Stay as root user for installation
-RUN python -m pip install --no-cache-dir \
+# Install database drivers using pip3
+RUN pip3 install --no-cache-dir \
     psycopg2-binary==2.9.9 \
     sqlalchemy-utils==0.41.1 \
     clickhouse-driver==0.2.6 \
