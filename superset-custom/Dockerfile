@@ -18,17 +18,21 @@ RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
     /app/.venv/bin/python get-pip.py && \
     rm get-pip.py
 
-# Install database drivers into the virtual environment
+# Install database drivers and analytics packages into the virtual environment
 RUN /app/.venv/bin/pip install --no-cache-dir \
     psycopg2-binary==2.9.9 \
     sqlalchemy-utils==0.41.1 \
     clickhouse-driver==0.2.6 \
-    clickhouse-sqlalchemy==0.2.4
+    clickhouse-sqlalchemy==0.2.4 \
+    prophet \
+    plotly
 
 # Verify installations
 RUN /app/.venv/bin/python -c "import psycopg2; print('psycopg2 installed successfully')" && \
     /app/.venv/bin/python -c "import sqlalchemy_utils; print('sqlalchemy-utils installed successfully')" && \
-    /app/.venv/bin/python -c "import clickhouse_driver; print('clickhouse-driver installed successfully')"
+    /app/.venv/bin/python -c "import clickhouse_driver; print('clickhouse-driver installed successfully')" && \
+    /app/.venv/bin/python -c "import prophet; print('prophet installed successfully')" && \
+    /app/.venv/bin/python -c "import plotly; print('plotly installed successfully')"
 
 # Create bootstrap marker to skip bootstrap script
 RUN touch /root/bootstrap && echo "Database drivers pre-installed in image" > /root/bootstrap
@@ -37,7 +41,7 @@ RUN touch /root/bootstrap && echo "Database drivers pre-installed in image" > /r
 USER superset
 
 # Labels for image metadata
-LABEL org.opencontainers.image.title="Superset with Database Drivers"
-LABEL org.opencontainers.image.description="Apache Superset with pre-installed PostgreSQL and ClickHouse drivers"
+LABEL org.opencontainers.image.title="Superset with Database Drivers and Analytics"
+LABEL org.opencontainers.image.description="Apache Superset with pre-installed PostgreSQL, ClickHouse drivers, Prophet forecasting, and Plotly"
 LABEL org.opencontainers.image.source="https://github.com/cameron-mckain/granian255-python314t"
 LABEL org.opencontainers.image.version="latest"

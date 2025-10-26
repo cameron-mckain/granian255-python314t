@@ -1,12 +1,17 @@
 # Custom Apache Superset Image
 
-This custom Docker image is based on the official Apache Superset image with pre-installed database drivers for PostgreSQL and ClickHouse.
+This custom Docker image is based on the official Apache Superset image with pre-installed database drivers for PostgreSQL and ClickHouse, plus analytics packages.
 
 ## Pre-installed Drivers
 
 - **PostgreSQL**: `psycopg2-binary==2.9.9` - For connecting to PostgreSQL databases
 - **SQLAlchemy Utils**: `sqlalchemy-utils==0.41.1` - Additional SQLAlchemy utilities
 - **ClickHouse**: `clickhouse-driver==0.2.6` and `clickhouse-sqlalchemy==0.2.4` - For connecting to ClickHouse databases (including SigNoz)
+
+## Pre-installed Analytics Packages
+
+- **Prophet**: Time series forecasting library for predictive analysis
+- **Plotly**: Interactive graphing library (required by Prophet)
 
 ## Building the Image
 
