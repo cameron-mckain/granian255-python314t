@@ -1,0 +1,41 @@
+FROM containers.github.projectunity.io/mckain/granian-python313:latest
+
+# Install system dependencies for dlib, opencv, and other AI packages
+RUN yum install -y \
+    cmake \
+    gcc-c++ \
+    openblas-devel \
+    lapack-devel \
+    gtk3-devel \
+    libX11-devel \
+    && yum clean all
+
+# Copy pre-downloaded wheels (managed with Git LFS)
+COPY wheels/ai/*.whl /tmp/ai-wheels/
+
+# Install PyTorch CPU and spaCy models from local wheels
+RUN python3.13 -m pip install --no-index --find-links /tmp/ai-wheels \
+    torch \
+    en-core-web-sm \
+    en-core-web-md \
+    en-core-web-lg \
+    en-core-web-trf
+
+# Install remaining AI/ML packages (smaller, can download)
+RUN python3.13 -m pip install \
+    opencv-python \
+    spacy \
+    spacy-llm \
+    azure-cognitiveservices-vision-computervision \
+    google-cloud-storage \
+    dlib \
+    pytumblr
+
+# Clean up wheels
+RUN rm -rf /tmp/ai-wheels
+
+# Expose port 8000
+EXPOSE 8000
+
+# Default command
+CMD ["python3.13", "--version"]

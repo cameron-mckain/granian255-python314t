@@ -95,6 +95,47 @@ spec:
     # ... rest of your config
 ```
 
+## AI/ML Specialized Image: ai-granian-python313
+
+For AI/ML workloads, we provide a specialized image based on Python 3.13 with additional packages:
+
+### Additional AI/ML Packages
+
+- **Computer Vision**: opencv-python, dlib
+- **NLP**: spacy, spacy-llm
+- **Pre-installed spaCy models**:
+  - en_core_web_sm (small, 12MB)
+  - en_core_web_md (medium, 32MB)
+  - en_core_web_lg (large, 383MB)
+  - en_core_web_trf (transformer, 437MB)
+- **Deep Learning**: PyTorch 2.9.0 (CPU-only)
+- **Cloud AI**: azure-cognitiveservices-vision-computervision, google-cloud-storage
+- **Social**: pytumblr
+
+### Pull AI Image
+
+**GitHub.com:**
+```bash
+docker pull ghcr.io/cameron-mckain/ai-granian-python313:latest
+```
+
+**GHES:**
+```bash
+docker pull containers.github.projectunity.io/mckain/ai-granian-python313:latest
+```
+
+### Local Build
+
+```bash
+docker build -f Dockerfile.ai -t ai-granian-python313 .
+```
+
+**Note**: Large wheels (PyTorch, spaCy models) are managed with Git LFS to keep repo size small while avoiding repeated downloads during builds.
+
+### Image Size
+
+Approximately 3-4GB (includes PyTorch CPU and all spaCy models)
+
 ## License
 
 MIT
