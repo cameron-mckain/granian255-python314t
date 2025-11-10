@@ -31,7 +31,6 @@ RUN python3.14t -m pip install \
     matplotlib \
     Pillow \
     imagehash \
-    opencv-python \
     psycopg \
     django-extensions \
     pyyaml \
@@ -44,6 +43,9 @@ RUN python3.14t -m pip install \
     graphene-django \
     django-channels-graphql-ws \
     awscli
+
+# NOTE: opencv-python removed - will be added later from pre-built wheel
+# to avoid circular dependency (this image is used to BUILD opencv-python)
 
 # Create app directory
 RUN mkdir -p /app
