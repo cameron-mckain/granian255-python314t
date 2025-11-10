@@ -6,27 +6,44 @@ RUN yum install -y \
     libxml2-devel \
     libxslt-devel \
     postgresql-devel \
+    file-devel \
+    mesa-libGL \
     && yum clean all
 
 # Upgrade pip for Python 3.14t
 RUN python3.14t -m pip install --upgrade pip
 
-# Install Django 5.2.7
-RUN python3.14t -m pip install django==5.2.7
+# Install Django 5.2.8
+RUN python3.14t -m pip install django==5.2.8
 
-# Install Granian 2.5.5 (Python 3.14t free-threaded wheel)
-RUN python3.14t -m pip install granian==2.5.5
+# Install Granian 2.5.7 (Python 3.14t free-threaded wheel)
+RUN python3.14t -m pip install granian==2.5.7
 
 # Install additional Python packages
 RUN python3.14t -m pip install \
     lxml \
     requests \
+    requests-toolbelt \
     beautifulsoup4 \
     numpy \
+    scipy \
     pandas \
     matplotlib \
+    Pillow \
+    imagehash \
+    opencv-python \
     psycopg \
-    django-extensions
+    django-extensions \
+    pyyaml \
+    python-magic \
+    filetype \
+    channels-redis \
+    django-cors-headers \
+    djangorestframework \
+    django-filter \
+    graphene-django \
+    django-channels-graphql-ws \
+    awscli
 
 # Create app directory
 RUN mkdir -p /app
