@@ -1,4 +1,10 @@
+ARG PYTHON_VERSION=3.14t
+ARG PYTHON_PATH=cp314-cp314t
+
 FROM quay.io/pypa/manylinux_2_28_x86_64:latest
+
+ARG PYTHON_VERSION
+ARG PYTHON_PATH
 
 # Install system development packages
 RUN yum install -y \
@@ -10,17 +16,17 @@ RUN yum install -y \
     mesa-libGL \
     && yum clean all
 
-# Upgrade pip for Python 3.14t
-RUN python3.14t -m pip install --upgrade pip
+# Upgrade pip
+RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install --upgrade pip
 
 # Install Django 5.2.8
-RUN python3.14t -m pip install django==5.2.8
+RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install django==5.2.8
 
-# Install Granian 2.5.7 (Python 3.14t free-threaded wheel)
-RUN python3.14t -m pip install granian==2.5.7
+# Install Granian 2.5.7
+RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install granian==2.5.7
 
 # Install additional Python packages
-RUN python3.14t -m pip install \
+RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install \
     lxml \
     requests \
     requests-toolbelt \
@@ -49,6 +55,9 @@ RUN python3.14t -m pip install \
 # NOTE: opencv-python removed - will be added later from pre-built wheel
 # to avoid circular dependency (this image is used to BUILD opencv-python)
 
+# Create symlink for convenience
+RUN ln -s /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} /usr/local/bin/python${PYTHON_VERSION}
+
 # Create app directory
 RUN mkdir -p /app
 
@@ -59,4 +68,4 @@ WORKDIR /app
 EXPOSE 8000
 
 # Default command (can be overridden in k8s deployment)
-CMD ["python3.14t", "--version"]
+CMD ["/bin/sh", "-c", "python${PYTHON_VERSION} --version"]

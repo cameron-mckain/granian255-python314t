@@ -1,15 +1,14 @@
-name: Build and Push Docker Image
+name: Build and Push Docker Images
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 env:
   GHCR_REGISTRY: ghcr.io
   GHES_REGISTRY: containers.github.projectunity.io
-  GHCR_IMAGE: cameron-mckain/granian-python314t
-  GHES_IMAGE: mckain/granian-python314t
 
 jobs:
   build-and-push:
@@ -17,6 +16,22 @@ jobs:
     permissions:
       contents: read
       packages: write
+
+    strategy:
+      matrix:
+        python:
+          - version: "3.12"
+            path: "cp312-cp312"
+            suffix: "312"
+          - version: "3.13"
+            path: "cp313-cp313"
+            suffix: "313"
+          - version: "3.14"
+            path: "cp314-cp314"
+            suffix: "314"
+          - version: "3.14t"
+            path: "cp314-cp314t"
+            suffix: "314t"
 
     steps:
       - name: Checkout repository
@@ -41,15 +56,19 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ env.GHCR_REGISTRY }}/${{ env.GHCR_IMAGE }}
-            ${{ env.GHES_REGISTRY }}/${{ env.GHES_IMAGE }}
+            ${{ env.GHCR_REGISTRY }}/cameron-mckain/granian-python${{ matrix.python.suffix }}
+            ${{ env.GHES_REGISTRY }}/mckain/granian-python${{ matrix.python.suffix }}
           tags: |
             type=raw,value=latest
+            type=sha,prefix=${{ matrix.python.suffix }}-
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
+          build-args: |
+            PYTHON_VERSION=${{ matrix.python.version }}
+            PYTHON_PATH=${{ matrix.python.path }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
