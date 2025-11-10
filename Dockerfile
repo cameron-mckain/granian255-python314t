@@ -33,6 +33,8 @@ RUN python3.14t -m pip install \
     imagehash \
     psycopg \
     django-extensions \
+    django-picklefield \
+    django-jsoneditor \
     pyyaml \
     python-magic \
     filetype \
