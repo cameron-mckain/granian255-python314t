@@ -14,7 +14,8 @@ RUN yum install -y \
 COPY wheels/ai/*.whl /tmp/ai-wheels/
 
 # Install PyTorch CPU and spaCy models from local wheels
-RUN python3.13 -m pip install --no-index --find-links /tmp/ai-wheels \
+# Use --find-links to prefer local wheels but allow dependency downloads
+RUN python3.13 -m pip install --find-links /tmp/ai-wheels \
     torch \
     en-core-web-sm \
     en-core-web-md \
