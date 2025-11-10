@@ -55,9 +55,6 @@ RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install \
 # NOTE: opencv-python removed - will be added later from pre-built wheel
 # to avoid circular dependency (this image is used to BUILD opencv-python)
 
-# Create symlink for convenience
-RUN ln -s /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} /usr/local/bin/python${PYTHON_VERSION}
-
 # Create app directory
 RUN mkdir -p /app
 
@@ -68,4 +65,6 @@ WORKDIR /app
 EXPOSE 8000
 
 # Default command (can be overridden in k8s deployment)
-CMD ["/bin/sh", "-c", "python${PYTHON_VERSION} --version"]
+# Use full path since we can't reliably create symlinks (may already exist in base image)
+ENV PYTHON_BIN=/opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION}
+CMD ["/bin/sh", "-c", "${PYTHON_BIN} --version"]
