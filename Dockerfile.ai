@@ -13,8 +13,11 @@ RUN yum install -y \
 # Copy pre-downloaded wheels (managed with Git LFS)
 COPY wheels/ai/*.whl /tmp/ai-wheels/
 
-# Install PyTorch CPU from local wheel first (with dependencies)
-RUN python3.13 -m pip install /tmp/ai-wheels/torch-*.whl
+# Install PyTorch CPU, dlib, and curated_tokenizers from local wheels first
+RUN python3.13 -m pip install \
+    /tmp/ai-wheels/torch-*.whl \
+    /tmp/ai-wheels/dlib-*.whl \
+    /tmp/ai-wheels/curated_tokenizers-*.whl
 
 # Install AI/ML packages
 RUN python3.13 -m pip install \
@@ -23,7 +26,6 @@ RUN python3.13 -m pip install \
     spacy-llm \
     azure-cognitiveservices-vision-computervision \
     google-cloud-storage \
-    dlib \
     pytumblr
 
 # Install spaCy models from local wheels (after spacy is installed)

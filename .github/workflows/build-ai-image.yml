@@ -34,13 +34,6 @@ jobs:
       - name: Pull LFS files
         run: git lfs pull
 
-      - name: Log in to GitHub.com Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.GHCR_REGISTRY }}
-          username: cameron-mckain
-          password: ${{ secrets.GHCR_PAT }}
-
       - name: Log in to GHES Container Registry
         uses: docker/login-action@v3
         with:
@@ -53,7 +46,6 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ env.GHCR_REGISTRY }}/cameron-mckain/ai-granian-python313
             ${{ env.GHES_REGISTRY }}/mckain/ai-granian-python313
           tags: |
             type=raw,value=latest
