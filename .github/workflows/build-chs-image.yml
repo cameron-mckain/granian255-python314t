@@ -82,6 +82,15 @@ jobs:
           path: extracted-wheels/grpcio-1.76.0-cp314-cp314t-linux_x86_64.whl
           key: grpcio-1.76.0-cp314t-${{ hashFiles('chs/Dockerfile') }}
 
+      - name: Upload grpcio wheel as artifact
+        uses: actions/upload-artifact@v3
+        if: success()
+        with:
+          name: grpcio-1.76.0-cp314t-wheel
+          path: extracted-wheels/grpcio-1.76.0-cp314-cp314t-linux_x86_64.whl
+          if-no-files-found: warn
+          retention-days: 90
+
       - name: Push CHS Docker image
         uses: docker/build-push-action@v5
         with:
