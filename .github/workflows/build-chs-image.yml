@@ -1,0 +1,50 @@
+name: Build CHS Granian Python Image
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'chs/**'
+      - '.github/workflows/build-chs-image.yml'
+  workflow_dispatch:
+
+env:
+  GHES_REGISTRY: containers.github.projectunity.io
+
+jobs:
+  build-and-push:
+    runs-on: arc-runner-set
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GHES Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.GHES_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ env.GHES_REGISTRY }}/mckain/chs-granian-python314t
+          tags: |
+            type=raw,value=latest
+            type=sha,prefix=main-
+
+      - name: Build and push CHS Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./chs
+          file: ./chs/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
