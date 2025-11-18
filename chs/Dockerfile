@@ -76,7 +76,7 @@ RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install \
 
 # Install additional Django packages
 RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install \
-    nested-admin \
+    django-nested-admin \
     django-better-admin-arrayfield \
     django-localflavor \
     django-phonenumber-field \
