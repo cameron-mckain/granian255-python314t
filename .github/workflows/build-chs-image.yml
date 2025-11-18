@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'chs/**'
+      - 'wheels/chs/**'
       - '.github/workflows/build-chs-image.yml'
   workflow_dispatch:
 

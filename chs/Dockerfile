@@ -1,83 +1,42 @@
 # CHS (COPE Health Scholars) Specialized Image
-# Based on Python 3.14t (free-threaded) with Django, Granian, GeoDjango, and CHS-specific packages
+# Builds on top of granian-python314t base which includes:
+#   Django 5.2.8, Granian 2.5.7, numpy, scipy, pandas, matplotlib,
+#   psycopg, djangorestframework, django-filter, django-cors-headers,
+#   django-extensions, django-picklefield, channels-redis, graphene-django,
+#   awscli, boto3, lxml, requests, beautifulsoup4, Pillow, etc.
 
-FROM quay.io/pypa/manylinux_2_28_x86_64:latest
+FROM containers.github.projectunity.io/mckain/granian-python314t:latest
 
-ARG PYTHON_VERSION=3.14t
-ARG PYTHON_PATH=cp314-cp314t
-
-# Install system development packages and PostGIS client libraries
+# Install PostGIS/GeoDjango system dependencies (not in base image)
 RUN yum install -y \
-    python3-devel \
-    libxml2-devel \
-    libxslt-devel \
-    postgresql-devel \
-    file-devel \
-    mesa-libGL \
-    # PostGIS/GeoDjango dependencies
     gdal \
     gdal-devel \
     geos \
     geos-devel \
     proj \
     proj-devel \
+    postgresql-devel \
     && yum clean all
 
-# Upgrade pip
-RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install --upgrade pip
-
-# Copy pre-built wheels for Python 3.14t (saves ~10min build time for grpcio)
+# Copy pre-built grpcio wheel for Python 3.14t (saves ~10min compilation)
 COPY wheels/chs/*.whl /tmp/chs-wheels/
 
-# Install Django 5.2.8
-RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install django==5.2.8
-
-# Install Granian 2.5.7
-RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install granian==2.5.7
-
-# Install core Python packages with pre-built pandas wheel (all in same command to avoid conflicts)
-RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install \
-    /tmp/chs-wheels/pandas-*.whl \
-    lxml \
-    requests \
-    requests-toolbelt \
-    beautifulsoup4 \
-    numpy \
-    scipy \
-    matplotlib \
-    Pillow \
-    imagehash \
-    psycopg \
-    django-extensions \
-    django-picklefield \
-    django-jsoneditor \
-    pyyaml \
-    python-magic \
-    filetype \
-    channels-redis \
-    django-cors-headers \
-    djangorestframework \
-    django-filter \
-    graphene-django \
-    awscli \
-    boto3
-
-# Install Celery and task queue packages
-RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install \
+# Install Celery and task queue packages (not in base image)
+RUN python3.14t -m pip install \
     celery \
     redis \
     django-celery-beat \
     django-celery-results
 
-# Install external service API clients
-RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install \
+# Install external service API clients (CHS-specific)
+RUN python3.14t -m pip install \
     stripe \
     simple-salesforce \
     canvasapi \
     zeep
 
-# Install additional Django packages
-RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install \
+# Install additional Django packages (CHS-specific, not in base image)
+RUN python3.14t -m pip install \
     django-nested-admin \
     django-better-admin-arrayfield \
     django-localflavor \
@@ -86,16 +45,16 @@ RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install \
     whitenoise
 
 # Install Elasticsearch integration
-RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install \
+RUN python3.14t -m pip install \
     django-elasticsearch-dsl \
     elasticsearch
 
-# Install grpcio from pre-built wheel first (dependency for opentelemetry)
-RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install \
+# Install grpcio from pre-built wheel (dependency for opentelemetry)
+RUN python3.14t -m pip install \
     /tmp/chs-wheels/grpcio-*.whl
 
 # Install monitoring and observability packages
-RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install \
+RUN python3.14t -m pip install \
     django-prometheus \
     python-json-logger \
     opentelemetry-api \
@@ -106,17 +65,11 @@ RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install \
     opentelemetry-instrumentation-celery \
     opentelemetry-exporter-otlp
 
-# Create app directory
-RUN mkdir -p /app
-
-# Set working directory
-WORKDIR /app
+# Clean up wheels
+RUN rm -rf /tmp/chs-wheels
 
 # Expose port 8000
 EXPOSE 8000
 
-# Set Python binary path as environment variable
-ENV PYTHON_BIN=/opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION}
-
-# Default command (can be overridden in k8s deployment)
-CMD ["/bin/sh", "-c", "${PYTHON_BIN} --version"]
+# Default command
+CMD ["python3.14t", "--version"]
