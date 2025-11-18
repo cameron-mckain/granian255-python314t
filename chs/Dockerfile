@@ -56,7 +56,6 @@ RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install \
     djangorestframework \
     django-filter \
     graphene-django \
-    django-channels-graphql-ws \
     awscli \
     boto3
 
@@ -80,7 +79,6 @@ RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install \
     django-better-admin-arrayfield \
     django-localflavor \
     django-phonenumber-field \
-    django-postgres \
     django-environ \
     whitenoise
 
