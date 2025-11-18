@@ -26,8 +26,7 @@ RUN yum install -y \
 # Upgrade pip
 RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install --upgrade pip
 
-# Copy pre-built wheels for Python 3.14t
-COPY wheels/chs/pandas-2.3.3-cp314-cp314t-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl /tmp/
+# Copy pre-built grpcio wheel for Python 3.14t (saves ~10min build time)
 COPY wheels/chs/grpcio-1.76.0-cp314-cp314t-linux_x86_64.whl /tmp/
 
 # Install Django 5.2.8
@@ -36,15 +35,15 @@ RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install django
 # Install Granian 2.5.7
 RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install granian==2.5.7
 
-# Install core Python packages with pre-built wheels (all in same command to avoid conflicts)
+# Install core Python packages (all in same command to avoid conflicts)
 RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install \
-    /tmp/pandas-2.3.3-cp314-cp314t-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl \
     lxml \
     requests \
     requests-toolbelt \
     beautifulsoup4 \
     numpy \
     scipy \
+    pandas==2.3.3 \
     matplotlib \
     Pillow \
     imagehash \
