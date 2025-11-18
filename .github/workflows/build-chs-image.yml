@@ -40,7 +40,48 @@ jobs:
             type=raw,value=latest
             type=sha,prefix=main-
 
-      - name: Build and push CHS Docker image
+      - name: Build CHS Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./chs/Dockerfile
+          load: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Extract grpcio wheel from image
+        run: |
+          # Create temp container from built image
+          CONTAINER_ID=$(docker create ${{ env.GHES_REGISTRY }}/mckain/chs-granian-python314t:latest)
+
+          # Try to copy wheel from expected cache location
+          docker cp ${CONTAINER_ID}:/root/.cache/pip/wheels/ ./pip-wheels/ || echo "Could not copy pip cache"
+
+          # Find and copy grpcio wheel
+          if [ -d ./pip-wheels ]; then
+            find ./pip-wheels -name "grpcio-*.whl" -exec cp {} ./grpcio-1.76.0-cp314-cp314t-linux_x86_64.whl \;
+          fi
+
+          # Cleanup container
+          docker rm ${CONTAINER_ID}
+
+          # List wheel info
+          if [ -f ./grpcio-1.76.0-cp314-cp314t-linux_x86_64.whl ]; then
+            ls -lh ./grpcio-1.76.0-cp314-cp314t-linux_x86_64.whl
+            sha256sum ./grpcio-1.76.0-cp314-cp314t-linux_x86_64.whl
+            echo "grpcio wheel extracted successfully"
+          fi
+
+      - name: Upload grpcio wheel as artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: grpcio-1.76.0-cp314t-wheel
+          path: grpcio-1.76.0-cp314-cp314t-linux_x86_64.whl
+          if-no-files-found: warn
+          retention-days: 90
+
+      - name: Push CHS Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
