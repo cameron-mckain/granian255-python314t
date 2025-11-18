@@ -23,6 +23,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: List wheels before build
+        run: ls -la wheels/chs/
+
+      - name: Debug wheels
+        run: |
+          echo "Checking wheels directory..."
+          ls -R wheels/
+          find . -name "*.whl"
+
       - name: Log in to GHES Container Registry
         uses: docker/login-action@v3
         with:
