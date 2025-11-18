@@ -26,8 +26,8 @@ RUN yum install -y \
 # Upgrade pip
 RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install --upgrade pip
 
-# Copy pre-built grpcio wheel for Python 3.14t (saves ~10min build time)
-COPY wheels/chs/grpcio-1.76.0-cp314-cp314t-linux_x86_64.whl /tmp/
+# Copy pre-built wheels for Python 3.14t (saves ~10min build time for grpcio)
+COPY wheels/chs/*.whl /tmp/chs-wheels/
 
 # Install Django 5.2.8
 RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install django==5.2.8
@@ -90,9 +90,12 @@ RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install \
     django-elasticsearch-dsl \
     elasticsearch
 
-# Install monitoring and observability packages (using pre-built grpcio wheel)
+# Install grpcio from pre-built wheel first (dependency for opentelemetry)
 RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install \
-    /tmp/grpcio-1.76.0-cp314-cp314t-linux_x86_64.whl \
+    /tmp/chs-wheels/grpcio-*.whl
+
+# Install monitoring and observability packages
+RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install \
     django-prometheus \
     python-json-logger \
     opentelemetry-api \
