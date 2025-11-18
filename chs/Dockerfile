@@ -35,15 +35,15 @@ RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install django
 # Install Granian 2.5.7
 RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install granian==2.5.7
 
-# Install core Python packages (all in same command to avoid conflicts)
+# Install core Python packages with pre-built pandas wheel (all in same command to avoid conflicts)
 RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install \
+    /tmp/chs-wheels/pandas-*.whl \
     lxml \
     requests \
     requests-toolbelt \
     beautifulsoup4 \
     numpy \
     scipy \
-    pandas==2.3.3 \
     matplotlib \
     Pillow \
     imagehash \
