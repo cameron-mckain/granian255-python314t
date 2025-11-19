@@ -22,8 +22,8 @@ RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install --upgr
 # Install Django 5.2.8
 RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install django==5.2.8
 
-# Install Granian 2.5.7
-RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install granian==2.5.7
+# Install Granian 2.6.0
+RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install granian==2.6.0
 
 # Install additional Python packages
 RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install \
