@@ -8,6 +8,8 @@ on:
       - 'chs/**'
       - 'wheels/chs/**'
       - '.github/workflows/build-chs-image.yml'
+  repository_dispatch:
+    types: [base-image-updated]
   workflow_dispatch:
 
 env:

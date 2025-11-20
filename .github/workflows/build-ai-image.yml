@@ -8,6 +8,8 @@ on:
       - 'Dockerfile.ai'
       - 'wheels/ai/**'
       - '.github/workflows/build-ai-image.yml'
+  repository_dispatch:
+    types: [base-image-updated]
   workflow_dispatch:
 
 env:
