@@ -50,7 +50,33 @@ RUN /opt/python/${PYTHON_PATH}/bin/python${PYTHON_VERSION} -m pip install \
     django-filter \
     graphene-django \
     django-channels-graphql-ws \
-    awscli
+    awscli \
+    # Unity-backend dependencies
+    celery[redis] \
+    django-celery-beat \
+    django-celery-results \
+    django-storages[boto3] \
+    boto3 \
+    django-unfold \
+    drf-spectacular \
+    whitenoise \
+    redis \
+    django-redis \
+    django-better-admin-arrayfield \
+    httpx \
+    rich \
+    docutils \
+    colour \
+    unidecode \
+    django-server-timing \
+    # OpenTelemetry
+    opentelemetry-api \
+    opentelemetry-sdk \
+    opentelemetry-exporter-otlp \
+    opentelemetry-instrumentation-django \
+    opentelemetry-instrumentation-celery \
+    opentelemetry-instrumentation-redis \
+    opentelemetry-instrumentation-psycopg
 
 # NOTE: opencv-python removed - will be added later from pre-built wheel
 # to avoid circular dependency (this image is used to BUILD opencv-python)
