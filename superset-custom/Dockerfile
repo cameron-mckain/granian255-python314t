@@ -1,7 +1,8 @@
 # Custom Apache Superset Image with Database Drivers
 # Based on official Apache Superset image with pre-installed database drivers
 
-FROM apache/superset:latest
+# Pinned: :latest silently jumps Superset versions (and DB migrations) on rebuild.
+FROM apache/superset:6.1.0
 
 # Switch to root to install packages
 USER root
@@ -34,6 +35,12 @@ RUN /app/.venv/bin/python -c "import psycopg2; print('psycopg2 installed success
     /app/.venv/bin/python -c "import prophet; print('prophet installed successfully')" && \
     /app/.venv/bin/python -c "import plotly; print('plotly installed successfully')"
 
+# Brotli 1.2.0 (from the base venv) has the decoder bug CVE-2026-111497;
+# urllib3/requests decode br responses with it. Fail the build if the
+# upgrade doesn't take.
+RUN /app/.venv/bin/pip install --no-cache-dir --upgrade 'Brotli>=1.2.1' && \
+    /app/.venv/bin/python -c "import importlib.metadata as m, sys; v = tuple(int(x) for x in m.version('Brotli').split('.')[:3]); sys.exit(0 if v >= (1, 2, 1) else 1)"
+
 # Create bootstrap marker to skip bootstrap script
 RUN touch /root/bootstrap && echo "Database drivers pre-installed in image" > /root/bootstrap
 
@@ -44,4 +51,4 @@ USER superset
 LABEL org.opencontainers.image.title="Superset with Database Drivers and Analytics"
 LABEL org.opencontainers.image.description="Apache Superset with pre-installed PostgreSQL, ClickHouse drivers, Prophet forecasting, and Plotly"
 LABEL org.opencontainers.image.source="https://github.com/cameron-mckain/granian255-python314t"
-LABEL org.opencontainers.image.version="latest"
+LABEL org.opencontainers.image.version="6.1.0"
